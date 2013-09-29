@@ -1,7 +1,7 @@
 json2yaml.py
 ============
 
-convert json to yaml
+convert json to yaml, preserving JSON ordering
 
 probably has been done before
 
