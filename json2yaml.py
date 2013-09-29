@@ -11,24 +11,30 @@ def json2yaml(fname):
     outfile = open(fname + '.yml', 'w')
     data = json.load(infile, object_pairs_hook=OrderedDict)
 
-    def dump(data, indent=""):
+    def dump(val, indent=""):
         yml = ""
-        for key in data:
-            if isinstance(data[key], OrderedDict):
-                yml += "\n%s%s:" % (indent, key)
-                yml += dump(data[key], indent + "    ")
-            else:
-                val = data[key]
+        if isinstance(val, OrderedDict):
+            for key, item in val.items():
                 if key == "_comment":
-                    key = "#"
-                if val is None:
-                    val = "null"
-                elif isinstance(val, bool):
-                    val = "true" if val else "false"
-                elif isinstance(val, basestring) and " " in val and key != "#":
-                    val = '"%s"' % val
-                yml += "\n%s%s: %s" % (indent, key, val)
+                    key = "# "
+                else:
+                    key = key + ": "
+                yml += "\n%s%s" % (indent, key)
+                yml += dump(item, indent + "    ")
+        elif isinstance(val, list):
+            for item in val:
+                yml += "\n%s - " % indent
+                yml += dump(item, indent + "    ")
+        else:
+            if val is None:
+                val = "null"
+            elif isinstance(val, bool):
+                val = "true" if val else "false"
+            elif isinstance(val, basestring) and " " in val:
+                val = '"%s"' % val
+            yml += str(val)
         return yml
+
     outfile.write(dump(data))
 
 if __name__ == "__main__":
