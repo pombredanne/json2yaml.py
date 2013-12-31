@@ -30,7 +30,7 @@ def json2yaml(fname):
                 val = "null"
             elif isinstance(val, bool):
                 val = "true" if val else "false"
-            elif isinstance(val, basestring) and " " in val:
+            elif isinstance(val, basestring) and (" " in val or "#" in val):
                 val = '"%s"' % val
             yml += str(val)
         return yml
